@@ -1,15 +1,41 @@
 const OpenAI = require('openai');
+const fs = require("fs");
+const path = require("path");
+const axios = require("axios");
 
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
 });
 
-async function chat() {
-    return openai.chat.completions.create({
-        messages: [{role: 'user', 'content': '안녕하세요.'}],
-        model: 'gpt-3.5-turbo'
+async function chat(modelId = '') {
+    const model = modelId ? `gpt-3.5-turbo:${modelId}` : 'gpt-3.5-turbo';
+    const messages = [{role: 'user', content: 'hello'}];
+
+    return openai.chat.completions.create({model, messages});
+}
+
+async function fileUpload() {
+    return openai.files.create({
+        file: fs.createReadStream(process.env.DATA_SET_PATH + '/test.jsonl'),
+        purpose: 'fine-tune'
     });
 }
 
+async function createFineTuningJob(trainingFile = '') {
+    try {
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
+        };
 
-module.exports = {chat}
+        const data = {
+            "training_file": `${trainingFile}`,
+            "model": 'gpt-3.5-turbo-0613'
+        };
+        return await axios.post('https://api.openai.com/v1/fine_tuning/jobs', data, {headers});
+    } catch (error) {
+        console.error('Error:', error.response.data);
+    }
+}
+
+module.exports = {chat, fileUpload, createFineTuningJob}
