@@ -67,11 +67,16 @@ async function fineTuningJobList() {
     return openai.fineTunes.list();
 }
 
+async function createImage(prompt = '', number = 1) {
+    return openai.images.generate({prompt, n: number});
+}
+
 module.exports = {
     chat,
     fileUpload,
     createFineTuningJob,
     FineTuningJobList: fineTuningJobList,
     deleteFineTuningJob,
-    createCompletion
+    createCompletion,
+    createImage
 }

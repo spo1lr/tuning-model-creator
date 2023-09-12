@@ -49,7 +49,17 @@ router.post('/fine-tuning/jobs/delete', async (req, res) => {
 router.get('/fine-tuning/jobs', async (req, res) => {
     const fineTune = await openai.FineTuningJobList();
     console.log(fineTune)
-    return res.json(fineTune);
+    return res.json({status: fineTune.status, message: fineTune.statusText});
+});
+
+router.post('/image', async (req, res) => {
+    const prompt = req.body.prompt;
+    const number = req.body.number || 1;
+    if (!prompt) return res.status(400).json({result: 'fail', message: 'Please enter prompt.'});
+
+    const response = await openai.createImage(prompt, number);
+    console.log(response);
+    return res.json(response);
 });
 
 
