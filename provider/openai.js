@@ -35,7 +35,7 @@ async function createCompletion(model = '', prompt = '') {
     }
 }
 
-async function fileUpload() {
+async function fineTuningFileUpload() {
     return openai.files.create({
         file: fs.createReadStream(process.env.DATA_SET_PATH + '/test.jsonl'),
         purpose: 'fine-tune'
@@ -73,7 +73,7 @@ async function createImage(prompt = '', number = 1) {
 
 module.exports = {
     chat,
-    fileUpload,
+    fineTuningFileUpload,
     createFineTuningJob,
     FineTuningJobList: fineTuningJobList,
     deleteFineTuningJob,

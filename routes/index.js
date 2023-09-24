@@ -23,7 +23,7 @@ router.post('/chat', async (req, res) => {
 });
 
 router.post('/fine-tuning', async (req, res) => {
-    const fileUpload = await openai.fileUpload();
+    const fileUpload = await openai.fineTuningFileUpload();
     return res.json(fileUpload);
 });
 
