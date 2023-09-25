@@ -71,6 +71,23 @@ async function createImage(prompt = '', number = 1) {
     return openai.images.generate({prompt, n: number});
 }
 
+async function imageEdit(originPicture, maskedPicture, prompt = '') {
+    try {
+        const headers = {
+            'Content-Type': 'multipart/form-data',
+            'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
+        };
+        const data = {
+            image: fs.createReadStream(originPicture),
+            mask: fs.createReadStream(maskedPicture),
+            prompt,
+        };
+        return await axios.post('https://api.openai.com/v1/images/edits', data, {headers});
+    } catch (error) {
+        console.error('Error:', error.response.data);
+    }
+}
+
 module.exports = {
     chat,
     fineTuningFileUpload,
@@ -78,5 +95,6 @@ module.exports = {
     FineTuningJobList: fineTuningJobList,
     deleteFineTuningJob,
     createCompletion,
-    createImage
+    createImage,
+    imageEdit
 }
